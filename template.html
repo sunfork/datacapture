@@ -1,0 +1,425 @@
+<!doctype html>
+<html class="no-js">
+  <head>
+    <meta charset="utf-8">
+    <title>datacapture - nuthsell</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <!-- build:css(.) styles/vendor.css -->
+    <!-- bower:css -->  
+    <link rel="stylesheet" href="bower_components/jquery-ui/themes/base/jquery-ui.min.css" />
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" />
+
+    <!-- endbower -->
+    <!-- endbuild -->
+    <!-- build:css(.tmp) styles/main.css -->
+    <link rel="stylesheet" href="styles/main.css">
+    <!-- endbuild -->
+    <style>
+    .droppable-active { background-color: #f0f0f0 !important; }
+    .form-body .col-md-6, .form-body .col-md-12 { min-height: 400px; }
+    .draggable { cursor: move; }
+    .draggable label { cursor: move; }
+    .option { cursor: pointer; }
+    .option:hover { color: #000; /* #FFD346 */ }
+    .form-body .col-md-12 { padding: 20px; border: 1px dashed #e0e0e0; }
+    .form-body .col-md-6 { padding: 20px; border: 1px dashed #e0e0e0; }
+    border: 1px solid #000
+    /* .remove-link:hover { color: red ;} */
+    </style>
+  </head>
+  <body>
+    <!--[if lt IE 10]>
+      <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
+
+    <div class="modal fade" id="modal-properties" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-body">
+            <div class="modal-question-properties"></div>
+            <div class="modal-question-preview"></div>
+          </div>
+          <div class="modal-footer">
+             <button type="button" class="btn btn-default" data-dismiss="modal">cancel</button>
+             <button type="button" class="btn btn-primary update-question">update</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="header">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="/index.html">users</a></li>
+          <li><a href="/devices.html">devices</a></li>
+          <li class="active"><a href="/templates.html">templates</a></li>
+          <li><a href="/tasks.html">tasks</a></li>
+          <li><a href="#"><span class="glyphicon glyphicon-search"></span></a></li>
+          <li>&nbsp;</li>
+          <li><a href="#" class="account"><span class="glyphicon glyphicon-user"></span></a></li>
+        </ul>
+        <h3 class="text-muted"><img style="height: 60px; margin-top: -15px;" src="images/prestige.png"></h3>
+      </div>
+
+      <div class="row clearfix">
+        <div class="col-lg-12 well toTop" id="templateEditor">
+          <div class="toolbar" style="display: inline-block"></div>
+          <!-- <div class="questionDetail" style="display: none;"></div> -->
+        </div>
+      </div>
+
+      <div class="row" style="margin-top: 100px;">
+        <div class="col-md-12" style="padding: 30px;">
+          <div style="background-color: #fff; border-radius: 5px; padding: 20px; 
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175); ">
+            <div class="row">
+              <div class="col-md-12 template-title"></div>
+            </div>
+            <div class="row form-body">
+              <!-- <div class="col-md-12 droppable sortable">
+              </div> -->
+              <div class="col-md-6 droppable sortable left-column">
+              </div>
+              <div class="col-md-6 droppable sortable right-column">
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <button class="btn btn-default preview">preview</button>
+                <button class="btn btn-primary save-changes">save changes</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer">
+        <p class="pull-right"><strong>nut</strong>shell <span class="glyphicon glyphicon-ok"></span></p>
+      </div>
+    </div>
+
+    <!-- build:js(.) scripts/vendor.js -->
+    <!-- bower:js -->
+    <script src="bower_components/jquery/dist/jquery.js"></script>
+    <script src="bower_components/jquery-ui/jquery-ui.min.js"></script>
+    <script src="bower_components/js-url/url.js"></script>
+    <script src="http://davestewart.io/resources/javascript/jQuery/populate/jquery.populate.pack.js"></script>
+    <!-- endbower -->
+    <!-- endbuild -->
+
+    <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
+    <script>
+      (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
+      function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
+      e=o.createElement(i);r=o.getElementsByTagName(i)[0];
+      e.src='//www.google-analytics.com/analytics.js';
+      r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
+      ga('create','UA-XXXXX-X');ga('send','pageview');
+    </script>
+
+        <!-- build:js(.) scripts/plugins.js -->
+        <script src="bower_components/bootstrap/js/affix.js"></script>
+        <script src="bower_components/bootstrap/js/alert.js"></script>
+        <script src="bower_components/bootstrap/js/dropdown.js"></script>
+        <script src="bower_components/bootstrap/js/tooltip.js"></script>
+        <script src="bower_components/bootstrap/js/modal.js"></script>
+        <script src="bower_components/bootstrap/js/transition.js"></script>
+        <script src="bower_components/bootstrap/js/button.js"></script>
+        <script src="bower_components/bootstrap/js/popover.js"></script>
+        <script src="bower_components/bootstrap/js/carousel.js"></script>
+        <script src="bower_components/bootstrap/js/scrollspy.js"></script>
+        <script src="bower_components/bootstrap/js/collapse.js"></script>
+        <script src="bower_components/bootstrap/js/tab.js"></script>
+        <!-- endbuild -->
+
+        <!-- build:js({app,.tmp}) scripts/main.js -->
+        <script src="scripts/main.js"></script>
+        <script src="scripts/question.js"></script>
+        <script>
+        var EEE;
+        var editingQuestionRef = null;
+
+        var getQuestions = function() {
+          var questions = {
+            question: []
+          };
+
+          $('.question').each(function(ctr, item) {
+            questions.question.push($(item).data('question'));
+          });
+
+          return questions;
+        }
+
+        var drawToolbar = function() {
+          //FIX! datacapture.questionTypes
+          questionTypes.forEach(function(questionType) {
+            var $toolbarIcon = $('<div class="form-group draggable" style="display: inline">\
+              <button class="btn btn-default disabled"><span class="glyphicon glyphicon-' + questionType.icon + '"></span></button>\
+            </div>')
+              // .data('nsItem', questionType) 
+              .data('question', { nsItem: questionType })
+              .appendTo('.toolbar')
+              .dblclick(function() {
+                //FIX! auto add
+              });
+          });
+
+          //add upButton
+          $('<div class="form-group" style="display: inline">\
+              <span>&nbsp;&nbsp;&nbsp;</span>\
+              <button class="btn btn-primary" style="display: none" id="upButton"><span class="glyphicon glyphicon-arrow-up"></span> top of page</button>\
+            </div>')
+              .appendTo('.toolbar')
+              .click(function() {
+                $("html, body").animate({ scrollTop: 0 }, 200);
+                return false;
+              });
+        };
+
+        var setup_draggable = function() {
+          $( ".draggable" ).draggable({            
+            appendTo: "body",
+            helper: "clone"
+          });
+          $( ".droppable" ).droppable({
+            accept: ".draggable",
+            helper: "clone",
+            hoverClass: "droppable-active",
+              drop: toolbarItemDropped
+          }).sortable();
+        };
+
+        var makeQuestionContainer = function(question) {
+
+          if (!question.ref) {
+            question.ref = guid();
+          }
+
+          var questionStructure = getQuestionStructure(question.nsItem);
+          var $container = $('<div class="form-group draggable question" data-ref="' + question.ref + '">\
+                                <span class="option remove-link glyphicon glyphicon-remove muted pull-right"></span>\
+                                <label for="password" class="control-label muted">' + question.nsItem.nsType + '</label>\
+                                <div>\
+                                  <div class="input-group">\
+                                    <input type="text" class="form-control text-container" aria-label="meeu" value="' + (question.text || '') + '" readonly>\
+                                    <span class="input-group-btn">\
+                                      <button class="btn btn-default configure" rel="popover">\
+                                        <span class="glyphicon glyphicon-' + question.nsItem.icon + '"></span>\
+                                      </button>\
+                                    </span>\
+                                  </div>\
+                                </div>\
+                              </div>')
+                            .data('question', question);
+
+          $container
+            .find('.configure')
+            .click(function() {
+              
+              var $propertyHtml = questionStructure.propertyHtml();
+              $propertyHtml.populate($.extend(question, question.attributes));
+              
+              editingQuestionRef = question.ref;
+
+              $('#modal-properties .modal-question-properties').html($propertyHtml);
+              $('#modal-properties').modal('show');
+            }).hover(function() {
+              //FIX! also toggleClass('btn-primary')
+              $(this).find('span.glyphicon').removeClass('glyphicon-' + question.nsItem.icon).addClass('glyphicon-cog');
+            }, function() {
+              $(this).find('span.glyphicon').removeClass('glyphicon-cog').addClass('glyphicon-' + question.nsItem.icon);
+            });
+
+            //update-question
+
+          return $container;
+        }
+
+        var toolbarItemDropped = function(event, ui) { 
+          var col = $(this).hasClass('left-column') ? 0 : 1;
+
+          //$(".empty-form").remove();
+          var $ui_draggable = $(ui.draggable);
+          var $orig = $ui_draggable;
+          var question = $orig.data('question');
+          
+          var nsidNo = Math.floor((Math.random() * 100) + 1);
+          var orig_id = ($orig.data('nsid') || 'nselement_-_');
+
+          question.attributes = { col: col };
+
+          if (!$ui_draggable.hasClass('dropped')) {
+
+            var $container = makeQuestionContainer(question)
+              .addClass('dropped')
+              .css({ position: 'static', left: null, right: null })
+              .appendTo(this);
+
+          } else {
+            //dragging between columns
+            if($(this)[0] != $orig.parent()[0]) {
+
+              var $container = makeQuestionContainer(question)
+                .addClass("dropped")
+                .css({"position": "static", "left": null, "right": null})
+                .appendTo(this);
+
+              $orig.remove();
+
+            } else {
+              console.log('dropped on same side!!');
+            }
+          }
+        };
+        
+        //setup buttons
+        $('#modal-properties .update-question').click(function() {
+          
+          var $modalProperties = $('#modal-properties');
+
+          //get all properties on form
+          var questionAttributes = deserialize($modalProperties.find('.modal-question-properties').children().serialize());
+
+          var $container = $('.question[data-ref="' + editingQuestionRef + '"]');
+          var question = $container.data('question');
+
+          question.text = questionAttributes.text.replace(/[+]/gi, ' ');
+          delete questionAttributes.text;
+
+          $.extend(question.attributes, questionAttributes);
+
+          $container.data('question', question);
+          
+          $('#modal-properties').modal('hide');
+        });
+      
+        //********************************************* events!! *********************************************
+
+        //hack: prevent text selection when draggin/droppping. NOTE: bind() is deprecated :)
+        $('#templateEditor').bind('mousedown', function(event) { event.preventDefault() });
+
+        //delete question 
+        $(document).on("click", ".option.remove-link", function(ev) {
+          $(this).parent().remove();
+        });
+
+        //conqfigure question
+        $(document).on("click", ".option.properties", function(ev) {
+          $('.questionDetail').append('<hr>').slideToggle(300, function() {
+            console.log('clicked option.properties');
+          });
+        });
+
+        $('.preview').click(function() {
+
+          console.log(getQuestions());
+
+          // console.log({ data: questions });
+          // console.log($.param({ data: questions }));
+          // console.log(encodeURIComponent($.param({ data: questions })));
+          //var d = encodeURIComponent($.param({ data: questions }, false));
+
+          //console.log(d);
+
+          //console.log(JSON.parse(decodeURIComponent(d)));
+          //console.log(JSON.parse(d));
+
+          //window.location = 'template_preview_mobile.html?template=' + template + '&x=' + d;
+          // window.location = 'template_preview_mobile.html?template=' + template + '&x=' + 
+          // encodeURIComponent($.param({ data: questions }));
+        });
+
+        //********************************************* document.ready *********************************************
+
+        $(document).ready(function() {
+
+          //get inputs
+          var templateName = decodeURIComponent(url('?template'));
+
+          //setup UI
+          drawToolbar();
+          setup_draggable();
+          $('.template-title').html('<h2>' + templateName + '</h2>');
+          $(window).scroll(function () {
+            if ($(this).scrollTop() != 0) {
+              $('#upButton').fadeIn();
+            } else {
+              $('#upButton').fadeOut();
+            }
+          }); 
+          
+          //load & populate template
+          //var questions = db.getTemplate(templateName, function(template) {
+          var template = {
+            ref: 'guid',
+            version: 1,
+            title: templateName,
+            author: 'jenny',
+            date: null,
+            questions: {
+              question: [
+                {
+                  ref: 'b423192b-c409-b8ca-d8ba-2ec25efcc525',
+                  nsItem: {
+                    nsType: 'taskdata'
+                  },
+                  text: 'Client Information',
+                  attributes: {
+                    col: 1    //FIX! 
+                  }
+                },
+                {
+                  ref: 'ee07673e-9220-a627-36f5-c8fc5366f11f',
+                  nsItem: {
+                    nsType: 'taskdata'
+                  },
+                  text: 'Client Name',
+                  dataPath: '{task.clientName}',
+                  attributes: {
+                    col: 1    //FIX! ,
+                    , mandatory: true
+                  }
+                },
+                {
+                  ref: '2c439920-97ed-3ff6-e980-6698e58d4ccf',
+                  nsItem: {
+                    nsType: 'taskdata'
+                  },
+                  text: '',
+                  dataPath: '{ns.now}',
+                  attributes: {
+                    col: 1    //FIX! 
+                  }
+                },
+                {
+                  ref: 'da19a1df-c3d2-bcc4-ea17-13d0a3c7cef5',
+                  nsItem: {
+                    nsType: 'heading'
+                  },
+                  text: 'Basic Information',
+                  attributes: {
+                    col: 1,    //FIX! 
+                    size: 'large'
+                  }
+                }
+              ]
+            }
+          };
+
+          template.questions.question.forEach(function(question) {
+
+            var $questionContainer = makeQuestionContainer(question)
+              .addClass('dropped')
+              .css({ position: 'static', left: null, right: null })
+              .appendTo($('.left-column'));
+            
+          });
+        }); // $(document).ready()        
+        </script>
+        <!-- endbuild -->
+  </body>
+</html>

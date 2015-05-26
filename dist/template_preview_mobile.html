@@ -1,0 +1,278 @@
+<!DOCTYPE html> <html class=no-js> <head> <meta charset=utf-8> <title>datacapture - nuthsell</title> <meta name=description content=""> <meta name=viewport content="width=device-width"> <link rel="shortcut icon" href=/5970c589.favicon.ico> <!-- Place favicon.ico and apple-touch-icon.png in the root directory --> <link rel=stylesheet href=styles/9c307a9d.vendor.css> <link rel=stylesheet href=styles/9f72ac5d.main.css> <style>.droppable-active { background-color: #f0f0f0 !important; }
+    .form-body .col-md-6, .form-body .col-md-12 { min-height: 400px; }
+    .draggable { cursor: move; }
+    .draggable label { cursor: move; }
+    .option { cursor: pointer; }
+    .option:hover { color: #000; /* #FFD346 */ }
+    .form-body .col-md-6 { padding: 20px; border: 1px dashed #f0f0f0; }
+
+    border: 1px solid #000
+    /* .remove-link:hover { color: red ;} */</style>  <body> <!--[if lt IE 10]>
+      <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]--> <div class=container> <div class=header> <ul class="nav nav-pills pull-right"> <li><a href=/index.html>users</a></li> <li><a href=/devices.html>devices</a></li> <li class=active><a href=/templates.html>templates</a></li> <li><a href=/tasks.html>tasks</a></li> <li><a href=#><span class="glyphicon glyphicon-search"></span></a></li> <li>&nbsp;</li> <li><a href=# class=account><span class="glyphicon glyphicon-user"></span></a></li> </ul> <h3 class=text-muted><img style="height: 60px; margin-top: -15px" src=images/prestige.png></h3> </div> <div class=row> <div class=col-md-12 style="padding: 30px"> <div class=template-question style="background-color: #fff; border-radius: 5px; padding: 20px; 
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175)"> <div class=row> <div class="col-md-12 template-title"></div> </div> <div class="row form-body"> <div class="col-md-12 droppable sortable"> </div> <div class="col-md-6 droppable sortable left-column" style="display: none"> </div> <div class="col-md-6 droppable sortable right-column" style="display: none"> </div> </div> <div class=row> <div class=col-md-12> <button class="btn btn-default preview">preview</button> <button class="btn btn-primary save-changes">save changes</button> </div> </div> </div> </div> </div> <div class=footer> <p class=pull-right><strong>nut</strong>shell <span class="glyphicon glyphicon-ok"></span></p> </div> </div> <script src=scripts/5bbde652.vendor.js></script> <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. --> <script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
+      function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
+      e=o.createElement(i);r=o.getElementsByTagName(i)[0];
+      e.src='//www.google-analytics.com/analytics.js';
+      r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
+      ga('create','UA-XXXXX-X');ga('send','pageview');</script> <script src=scripts/cb7562c6.plugins.js></script> <script src=scripts/d41d8cd9.main.js></script> <script>var data = decodeURIComponent($.url('?x'));
+
+        console.log('HEY', data);
+
+
+
+        //var questions = [];
+        
+        $(document).ready(function() {
+
+          var template = decodeURIComponent(url('?template'));
+
+          $('.template-title').html('<h2>' + template + '</h2>');
+
+          // var questionTypes = [
+          //   { icon: 'tasks', nsType: 'taskmetadata' }, 
+          //   { icon: 'question-sign', nsType: 'yesno' },
+          //   { icon: 'list', nsType: 'multiplelist' }, 
+          //   { icon: 'align-justify', nsType: 'list' },
+          //   { icon: 'barcode', nsType: 'barcode' },
+          //   { icon: 'qrcode', nsType: 'qrcode' },
+          //   { icon: 'pencil', nsType: 'signature' },
+          //   { icon: 'map-marker', nsType: 'geolocation' },
+          //   { icon: 'calendar', nsType: 'date' },
+          //   { icon: 'picture', nsType: 'photo' },
+          //   { icon: 'volume-up', nsType: 'audio' },
+          //   { icon: 'facetime-video', nsType: 'video' },
+          //   { icon: 'header', nsType: 'heading' }
+          // ];
+
+          // questionTypes.forEach(function(item) {
+          //   var $toolbarIcon = $('<div class="form-group draggable" style="display: inline">\
+          //     <button class="btn btn-default disabled "><span class="glyphicon glyphicon-' + item.icon + '"></span></button>\
+          //   </div>').data('nsItem', item).appendTo('.toolbar');
+          // });
+
+          //hack: prevent text selection when draggin/droppping.
+          //ALSO: bind() is deprecated :)
+          // $('#templateEditor').bind('mousedown', function(event) { event.preventDefault() });
+
+          //setup_draggable();
+
+          var $col = $('.form-body .col-md-6').toggle(true);    //toggle first column
+          $(".form-body .col-md-12 .draggable").each(function(i, el) {
+            $(this).remove().appendTo(i % 2 ? $col[1] : $col[0]);
+          });
+          $('.form-body .col-md-12').toggle(false);
+
+          $("#copy-to-clipboard").on("click", function() {
+            var $copy = $(".form-body").parent().clone().appendTo(document.body);
+            $copy.find(".tools, :hidden").remove();
+            $.each(["draggable", "droppable", "sortable", "dropped",
+              "ui-sortable", "ui-draggable", "ui-droppable", "form-body"], function(i, c) {
+              $copy.find("." + c).removeClass(c);
+            })
+            var html = html_beautify($copy.html());
+            $copy.remove();
+
+            $modal = get_modal(html).modal("show");
+            $modal.find(".btn").remove();
+            $modal.find(".modal-title").html("Copy HTML");
+            $modal.find(":input:first").select().focus();
+            
+            return false;
+          })
+
+          $(document).on("click", ".option.remove-link", function(ev) {
+            $(this).parent().remove();
+          });
+
+          $(document).on("click", ".option.properties", function(ev) {
+            $('.questionDetail').append('<hr>').slideToggle(300, function() {
+              console.log('asd');
+            });
+          });
+
+          $('.preview').click(function() {
+            console.log('var questions = ' + JSON.stringify(questions));
+            //console.log('var questions = ', questions);
+            alert('template_preview_mobile.html?template=' + template);
+            //window.location = 'template_preview_mobile.html?template=' + template;
+          });
+
+          data.questions.forEach(function(question) {
+            
+            var $question = get_question(question);
+
+            $question
+              .addClass("dropped")
+              .css({"position": "static", "left": null, "right": null});
+
+            if (question.col == 1) {
+              $question.appendTo($('.left-column'));
+            } else {
+              //default to first columns
+              $question.appendTo($('.right-column'));
+            }
+
+            //console.log('yipeee', $question);
+          });
+
+        }); // $(document).ready()
+
+        var unique_id = function(el) {
+          var nsidNo = Math.floor((Math.random() * 100) + 1);
+          var orig_id = ($orig.data('nsid') || 'nselement_-_');
+          // console.log(orig_id);
+        }
+
+        var get_question = function(nsItem) {
+
+          //most questions need an obtain button for rich media inputs field value
+          //text fields have no obtain button
+          //date fields use obtain button to launch picker
+          //barcode, qrcode, photo, video and audio use obtain to launch camera
+          //etc...
+
+          //obtain button
+          var obtain = false;
+          switch (nsItem.nsType) {
+            case 'multiplelist':
+            case 'list':
+            case 'barcode':
+            case 'qrcode':
+            case 'signature':
+            case 'geolocation':
+            case 'date':
+            case 'photo':
+            case 'audio':
+            case 'video':
+              obtain = true;
+              break;
+          }
+
+          var $question = $('<div class="form-group draggable">\
+                          <span class="option properties glyphicon glyphicon-cog text-muted pull-right"></span>\
+                          <span class="option remove-link glyphicon glyphicon-remove text-muted pull-right"></span>\
+                          <label for="password" class="control-label">' + nsItem.nsType + '</label>\
+                          <div>\
+                            <div class="input-group">\
+                              <input type="text" class="form-control" aria-label="Amount (to the nearest dollar)" readonly>\
+                              <span class="input-group-btn">\
+                                <button class="btn btn-default">\
+                                  <span class="glyphicon glyphicon-' + nsItem.icon + '"></span>\
+                                </button>\
+                              </span>\
+                            </div>\
+                          </div>\
+                        </div>').data('nsItem', nsItem);
+
+          // $question.find('.option.properties').click(function() {
+          //   $('#properties-modal').modal('show');
+          // });
+
+          // $question.find('.draggable > label').click(function() {
+          //  $(this).html('<input type="text">')
+          //  //$(this).text();
+          // });
+
+          return $question;
+        }
+
+        var setup_draggable = function() {
+          $( ".draggable" ).draggable({            
+            appendTo: "body",
+            helper: "clone"
+          });
+          $( ".droppable" ).droppable({
+            accept: ".draggable",
+            helper: "clone",
+            hoverClass: "droppable-active",
+            drop: function( event, ui ) {
+
+
+
+              //$(".empty-form").remove();
+              var $ui_draggable = $(ui.draggable);
+              var $orig = $ui_draggable;
+              var nsItem = $orig.data('nsItem');
+              var nsidNo = Math.floor((Math.random() * 100) + 1);
+
+              var orig_id = ($orig.data('nsid') || 'nselement_-_');
+
+              if(!$ui_draggable.hasClass("dropped")) {
+
+                //var question = get_question($orig)
+                var question = get_question(nsItem)
+                  .addClass("dropped")
+                  .css({"position": "static", "left": null, "right": null})
+                  .appendTo(this);
+
+                //questions.push($orig.data('nsItem'));
+                console.log('/FIX! what about the col!?')
+                questions.push(question.data('nsItem'));
+                //questions.push(question.get(0));
+
+                // var $el = $orig
+                //  .clone()
+                //  .addClass("dropped")
+                //  .css({"position": "static", "left": null, "right": null})
+                //  .appendTo(this);
+                  
+                // update id
+                // var id = $orig.find(":input").attr("id");
+                
+                // if(id) {
+                //   // console.log(id);
+                //   id = id.split("-").slice(0,-1).join("-") + "-" 
+                //     + (parseInt(id.split("-").slice(-1)[0]) + 1)
+                // // console.log(id);
+                //   $orig.find(":input").attr("id", id);
+                //   $orig.find("label").attr("for", id);
+                // }
+
+                // // tools
+                // $('<p class="tools">\
+                //  <a class="edit-link">Edit HTML<a> | \
+                //  <a class="remove-link">Remove</a></p>').appendTo($el);
+
+                // tools
+                // $('<p class="tools">\
+                //  <a class="remove-link">Remove</a></p>').appendTo($el);
+              } else {
+
+                if($(this)[0]!=$orig.parent()[0]) {
+                  alert('asdasdas');
+                  var $el = $orig
+                    .clone()
+                    .css({"position": "static", "left": null, "right": null})
+                    .appendTo(this);
+                  $orig.remove();
+                } else {
+                  console.log('wat?');
+                }
+              }
+            }
+          }).sortable();
+          
+        }
+        
+        var get_modal = function(content) {
+          var modal = $('<div class="modal" style="overflow: auto;" tabindex="-1">\
+            <div class="modal-dialog">\
+              <div class="modal-content">\
+                <div class="modal-header">\
+                  <a type="button" class="close"\
+                    data-dismiss="modal" aria-hidden="true">&times;</a>\
+                  <h4 class="modal-title">Edit HTML</h4>\
+                </div>\
+                <div class="modal-body ui-front">\
+                  <textarea class="form-control" \
+                    style="min-height: 200px; margin-bottom: 10px;\
+                    font-family: Monaco, Fixed">'+content+'</textarea>\
+                  <button class="btn btn-success">Update</button>\
+                </div>\
+              </div>\
+            </div>\
+            </div>').appendTo(document.body);
+            
+          return modal;
+        };</script>  
