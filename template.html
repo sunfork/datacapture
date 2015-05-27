@@ -328,6 +328,7 @@
         });
 
         $('.preview').click(function() {
+          getQuestions();
           $.jStorage.set(templateName, template);
           //window.location = 'template_preview_mobile.html?template=' + templateName;
           window.location = 'template_preview.html?template=' + templateName;
