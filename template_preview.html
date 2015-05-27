@@ -35,44 +35,15 @@
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
 
-    <div class="modal fade" id="modal-properties" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-body">
-            <div class="modal-question-properties"></div>
-            <div class="modal-question-preview"></div>
-          </div>
-          <div class="modal-footer">
-             <button type="button" class="btn btn-default" data-dismiss="modal">cancel</button>
-             <button type="button" class="btn btn-primary update-question">update</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <div class="container">
       <div class="header">
         <ul class="nav nav-pills pull-right">
-          <li><a href="/index.html">users</a></li>
-          <li><a href="/devices.html">devices</a></li>
-          <li class="active"><a href="/templates.html">templates</a></li>
-          <li><a href="/tasks.html">tasks</a></li>
-          <li><a href="#"><span class="glyphicon glyphicon-search"></span></a></li>
-          <li>&nbsp;</li>
-          <li><a href="#" class="account"><span class="glyphicon glyphicon-user"></span></a></li>
+          <li class="active"><a href="#" class="back"><span class="glyphicon glyphicon-arrow-left"></span> return</a></li>
         </ul>
         <h3 class="text-muted"><img style="height: 60px; margin-top: -15px;" src="images/prestige.png"></h3>
       </div>
 
-      <div class="row clearfix">
-        <div class="col-lg-12 well toTop" id="templateEditor">
-          <!-- <p class="text-muted">drag these...</p> -->
-          <div class="toolbar" style="display: inline-block"></div>
-          <!-- <div class="questionDetail" style="display: none;"></div> -->
-        </div>
-      </div>
-
-      <div class="row" style="margin-top: 20px;">
+      <div class="row">
         <div class="col-md-12" style="padding: 30px;">
           <div style="background-color: #fff; border-radius: 5px; padding: 20px; 
             box-shadow: 0 1px 2px rgba(0, 0, 0, 0.175); ">
@@ -141,69 +112,9 @@
         <script src="scripts/main.js"></script>
         <script src="scripts/question.js"></script>
         <script>
-        var editingQuestionRef = null;
         var templateName = '';
         var template = {};
-
-        var getQuestions = function() {
-          var questions = {
-            question: []
-          };
-
-          $('.question').each(function(ctr, item) {
-            questions.question.push($(item).data('question'));
-          });
-
-          //update original template
-          template.questions = questions;
-
-          return questions;
-        }
-
-        var drawToolbar = function() {
-          //FIX! datacapture.questionTypes
-          questionTypes.forEach(function(questionType) {
-            var $toolbarIcon = $('<div class="form-group draggable" style="display: inline">\
-              <button class="btn btn-default disabled"><span class="glyphicon glyphicon-' + questionType.icon + '"></span></button>\
-            </div>')
-              // .data('nsItem', questionType) 
-              .data('question', { nsItem: questionType })
-              .appendTo('.toolbar')
-              .dblclick(function() {
-                //FIX! auto add
-              });
-          });
-
-          //add upButton
-          $('<div class="form-group" style="display: inline">\
-              <span>&nbsp;&nbsp;&nbsp;</span>\
-              <button class="btn btn-primary" style="display: none" id="upButton"><span class="glyphicon glyphicon-arrow-up"></span> top of page</button>\
-            </div>')
-              .appendTo('.toolbar')
-              .click(function() {
-                $("html, body").animate({ scrollTop: 0 }, 200);
-                return false;
-              });
-        };
-
-        var setup_draggable = function() {
-          $( ".draggable" ).draggable({            
-            appendTo: "body",
-            helper: "clone"
-          });
-          $( ".droppable" ).droppable({
-            accept: ".draggable",
-            helper: "clone",
-            hoverClass: "droppable-active",
-              drop: toolbarItemDropped
-          }).sortable();
-        };
-
-        var refreshContainer = function($container) {
-          var question = $container.data('question');
-          $container.find('.text-container').val(question.text);
-        }
-
+        
         var makeQuestionContainer = function(question) {
 
           if (!question.ref) {
@@ -329,8 +240,12 @@
 
         $('.preview').click(function() {
           $.jStorage.set(templateName, template);
-          //window.location = 'template_preview_mobile.html?template=' + templateName;
-          window.location = 'template_preview.html?template=' + templateName;
+          window.location = 'template_preview_mobile.html?template=' + templateName;
+        });
+
+        $('.back').click(function(evt) {
+          evt.preventDefault();
+          window.history.back();
         });
 
         //********************************************* document.ready *********************************************
@@ -339,10 +254,9 @@
 
           //get inputs
           templateName = decodeURIComponent(url('?template'));
+          template = $.jStorage.get(templateName);
 
           //setup UI
-          drawToolbar();
-          setup_draggable();
           $('.template-title').html('<h2>' + templateName + '</h2>');
           $(window).scroll(function () {
             if ($(this).scrollTop() != 0) {

@@ -84,6 +84,7 @@
     <script src="bower_components/jquery/dist/jquery.js"></script>
     <script src="bower_components/jquery-ui/jquery-ui.min.js"></script>
     <script src="bower_components/js-url/url.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/jStorage/0.4.12/jstorage.min.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
 
@@ -117,36 +118,17 @@
         <!-- endbuild -->
 
         <script>
-
-        var data = decodeURIComponent($.url('?x'));
-
-        console.log('HEY', data);
-
-
-
-        //var questions = [];
+        var templateName = '';
+        var template = {};
         
         $(document).ready(function() {
 
-          var template = decodeURIComponent(url('?template'));
+          templateName = decodeURIComponent(url('?template'));
+          template = $.jStorage.get(templateName);
 
-          $('.template-title').html('<h2>' + template + '</h2>');
+          $('.template-title').html('<h2>' + templateName + '</h2>');
 
-          // var questionTypes = [
-          //   { icon: 'tasks', nsType: 'taskmetadata' }, 
-          //   { icon: 'question-sign', nsType: 'yesno' },
-          //   { icon: 'list', nsType: 'multiplelist' }, 
-          //   { icon: 'align-justify', nsType: 'list' },
-          //   { icon: 'barcode', nsType: 'barcode' },
-          //   { icon: 'qrcode', nsType: 'qrcode' },
-          //   { icon: 'pencil', nsType: 'signature' },
-          //   { icon: 'map-marker', nsType: 'geolocation' },
-          //   { icon: 'calendar', nsType: 'date' },
-          //   { icon: 'picture', nsType: 'photo' },
-          //   { icon: 'volume-up', nsType: 'audio' },
-          //   { icon: 'facetime-video', nsType: 'video' },
-          //   { icon: 'header', nsType: 'heading' }
-          // ];
+          
 
           // questionTypes.forEach(function(item) {
           //   var $toolbarIcon = $('<div class="form-group draggable" style="display: inline">\
@@ -158,35 +140,31 @@
           //ALSO: bind() is deprecated :)
           // $('#templateEditor').bind('mousedown', function(event) { event.preventDefault() });
 
-          //setup_draggable();
+          // //setup_draggable();
 
-          var $col = $('.form-body .col-md-6').toggle(true);    //toggle first column
-          $(".form-body .col-md-12 .draggable").each(function(i, el) {
-            $(this).remove().appendTo(i % 2 ? $col[1] : $col[0]);
-          });
-          $('.form-body .col-md-12').toggle(false);
+          // var $col = $('.form-body .col-md-6').toggle(true);    //toggle first column
+          // $(".form-body .col-md-12 .draggable").each(function(i, el) {
+          //   $(this).remove().appendTo(i % 2 ? $col[1] : $col[0]);
+          // });
+          // $('.form-body .col-md-12').toggle(false);
 
-          $("#copy-to-clipboard").on("click", function() {
-            var $copy = $(".form-body").parent().clone().appendTo(document.body);
-            $copy.find(".tools, :hidden").remove();
-            $.each(["draggable", "droppable", "sortable", "dropped",
-              "ui-sortable", "ui-draggable", "ui-droppable", "form-body"], function(i, c) {
-              $copy.find("." + c).removeClass(c);
-            })
-            var html = html_beautify($copy.html());
-            $copy.remove();
+          // $("#copy-to-clipboard").on("click", function() {
+          //   var $copy = $(".form-body").parent().clone().appendTo(document.body);
+          //   $copy.find(".tools, :hidden").remove();
+          //   $.each(["draggable", "droppable", "sortable", "dropped",
+          //     "ui-sortable", "ui-draggable", "ui-droppable", "form-body"], function(i, c) {
+          //     $copy.find("." + c).removeClass(c);
+          //   })
+          //   var html = html_beautify($copy.html());
+          //   $copy.remove();
 
-            $modal = get_modal(html).modal("show");
-            $modal.find(".btn").remove();
-            $modal.find(".modal-title").html("Copy HTML");
-            $modal.find(":input:first").select().focus();
+          //   $modal = get_modal(html).modal("show");
+          //   $modal.find(".btn").remove();
+          //   $modal.find(".modal-title").html("Copy HTML");
+          //   $modal.find(":input:first").select().focus();
             
-            return false;
-          })
-
-          $(document).on("click", ".option.remove-link", function(ev) {
-            $(this).parent().remove();
-          });
+          //   return false;
+          // })
 
           $(document).on("click", ".option.properties", function(ev) {
             $('.questionDetail').append('<hr>').slideToggle(300, function() {
